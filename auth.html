@@ -294,6 +294,14 @@
           return;
         }
 
+        // Έλεγξε αν υπάρχει pending company
+        const pendingCompany = localStorage.getItem('provaxia_pending_company');
+        if (pendingCompany && profile.type === 'company') {
+          localStorage.removeItem('provaxia_pending_company');
+          window.location.href = 'company.html';
+          return;
+        }
+
         // Redirect based on type
         if (profile.type === 'company') {
           window.location.href = 'company.html';
