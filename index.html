@@ -162,7 +162,7 @@
       <button class="lang-btn active" onclick="setLang('el')">ΕΛ</button>
       <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
-    <a href="candidates.html" style="font-size:0.85rem;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" data-el="Για Εταιρείες" data-en="For Companies">Για Εταιρείες</a>
+    <a href="#" onclick="openCompany();return false;" style="font-size:0.85rem;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" data-el="Για Εταιρείες" data-en="For Companies">Για Εταιρείες</a>
     <a href="redeem.html" style="font-size:0.85rem;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" data-el="Επαλήθευση Υποψηφίου" data-en="Candidate Verification">Επαλήθευση Υποψηφίου</a>
     <div id="nav-auth-area"></div>
   </div>
@@ -393,7 +393,7 @@
     <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;margin-bottom:1rem;line-height:1.2;" data-el="Βρες τους κατάλληλους ανθρώπους, πριν τους βρει κάποιος άλλος" data-en="Find the right people, before someone else does">Βρες τους κατάλληλους ανθρώπους, πριν τους βρει κάποιος άλλος</h2>
     <p style="font-size:1rem;color:rgba(255,255,255,0.65);margin-bottom:2.5rem;line-height:1.7;" data-el="Όλοι οι υποψήφιοι στην πλατφόρμα μας έχουν περάσει από αυστηρή αξιολόγηση. Δεν χρειάζεσαι συνεντεύξεις για να ξέρεις αν ξέρουν — το ξέρεις ήδη." data-en="Every candidate on our platform has passed a rigorous assessment. No need for interviews to find out if they know their stuff — you already know.">Όλοι οι υποψήφιοι στην πλατφόρμα μας έχουν περάσει από αυστηρή αξιολόγηση. Δεν χρειάζεσαι συνεντεύξεις για να ξέρεις αν ξέρουν — το ξέρεις ήδη.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-      <a href="candidates.html" style="display:inline-block;padding:0.9rem 2rem;background:var(--accent);color:white;border-radius:100px;text-decoration:none;font-weight:500;font-size:0.95rem;transition:all 0.2s;" onmouseover="this.style.background='#0f766e'" onmouseout="this.style.background='var(--accent)'" data-el="Δες τους υποψηφίους →" data-en="Browse candidates →">Δες τους υποψηφίους →</a>
+      <a href="#" onclick="openCompany();return false;" style="display:inline-block;padding:0.9rem 2rem;background:var(--accent);color:white;border-radius:100px;text-decoration:none;font-weight:500;font-size:0.95rem;transition:all 0.2s;" onmouseover="this.style.background='#0f766e'" onmouseout="this.style.background='var(--accent)'" data-el="Δες τους υποψηφίους →" data-en="Browse candidates →">Δες τους υποψηφίους →</a>
       <a href="#contact" style="display:inline-block;padding:0.9rem 2rem;background:transparent;color:white;border:1px solid rgba(255,255,255,0.3);border-radius:100px;text-decoration:none;font-weight:500;font-size:0.95rem;transition:all 0.2s;" onmouseover="this.style.borderColor='white'" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'" data-el="Επικοινωνία" data-en="Contact us">Επικοινωνία</a>
     </div>
     <div style="display:flex;gap:2rem;justify-content:center;margin-top:3rem;flex-wrap:wrap;">
@@ -691,6 +691,24 @@
   }
 
   updateNavAuth();
+
+  function openCompany() {
+    const token = localStorage.getItem('provaxia_token');
+    const profileStr = localStorage.getItem('provaxia_profile');
+    if (!token) {
+      // Δεν είναι συνδεδεμένος → πήγαινε στο auth
+      localStorage.setItem('provaxia_pending_company', '1');
+      window.location.href = 'auth.html?next=company';
+      return;
+    }
+    const profile = profileStr ? JSON.parse(profileStr) : null;
+    if (profile && profile.type === 'candidate') {
+      // Υποψήφιος → δεν έχει πρόσβαση
+      alert('Αυτή η σελίδα είναι μόνο για εταιρείες. Παρακαλώ συνδέσου με λογαριασμό εταιρείας.');
+      return;
+    }
+    window.location.href = 'company.html';
+  }
 
   // Έλεγξε αν επέστρεψε μετά από σύνδεση για assessment
   (function() {
