@@ -181,6 +181,20 @@
     const fullName = p.first_name + ' ' + (p.last_name || '');
     document.getElementById('nav-name').textContent = p.first_name;
 
+    const failedSkill = currentProfile.roadmap_needed || null;
+    const roadmapDone = currentProfile.roadmap_completed || null;
+    const showRoadmap = failedSkill && !roadmapDone;
+
+    const roadmapBanner = showRoadmap ? `
+      <div style="margin-top:1.2rem;padding:1.2rem;background:#fef3c7;border:1.5px solid #fde047;border-radius:12px;text-align:left;">
+        <div style="font-weight:600;color:#92400e;margin-bottom:0.3rem;">⚠️ Δεν πέρασες το assessment (${failedSkill})</div>
+        <div style="font-size:0.85rem;color:#92400e;margin-bottom:1rem;line-height:1.5;">Για να ξανακάνεις assessment μετά από 7 μέρες, πρέπει να ολοκληρώσεις το AI Roadmap βελτίωσης.</div>
+        <a href="roadmap.html?skill=${encodeURIComponent(failedSkill)}" style="display:inline-block;background:#0d9488;color:white;padding:0.7rem 1.5rem;border-radius:100px;text-decoration:none;font-size:0.9rem;font-weight:500;transition:background 0.2s;">
+          🗺️ Ξεκίνα AI Roadmap →
+        </a>
+      </div>
+    ` : '';
+
     const badgeHTML = currentBadge ? `
       <div class="badge-display">
         <div class="badge-icon">🎖️</div>
@@ -197,6 +211,7 @@
         <div class="no-badge-title">Δεν έχεις badge ακόμα</div>
         <div class="no-badge-sub">Κάνε ένα assessment και πέρασέ το για να αποκτήσεις το badge σου!</div>
       </div>
+      ${roadmapBanner}
     `;
 
     document.getElementById('main-content').innerHTML = `
