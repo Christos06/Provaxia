@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProvAxia — Badge Verification</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #0d9488;
+    --ink: #0d0d0d;
+    --paper: #fafaf9;
+    --card: #ffffff;
+    --border: #e5e7eb;
+    --muted: #9ca3af;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 1.2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(250,250,249,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .nav-back {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--accent); }
+
+  /* MAIN */
+  main {
+    width: 100%;
+    max-width: 560px;
+    margin-top: 80px;
+  }
+
+  /* SEARCH BOX */
+  .search-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    margin-bottom: 1.5rem;
+  }
+
+  .search-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+  .search-box h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  .search-box p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    padding: 0.85rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    outline: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { text-transform: none; letter-spacing: 0; color: var(--muted); }
+
+  .btn-verify {
+    padding: 0.85rem 1.5rem;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .btn-verify:hover { background: var(--accent); }
+
+  /* STATES */
+  #state-loading, #state-error, #state-result { display: none; }
+
+  .state-msg {
+    text-align: center;
+    padding: 2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+
+  .state-msg .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .state-msg h2 { font-family: 'Syne', sans-serif; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .state-msg p { font-size: 0.85rem; color: var(--muted); }
+
+  /* BADGE */
+  .badge-wrap {
+    position: relative;
+    background: var(--card);
+    border: 1.5px solid #e0f2f1;
+    border-radius: 20px;
+    padding: 2.5rem 2.5rem 2rem;
+    box-shadow: 0 8px 40px rgba(13,148,136,0.1);
+    overflow: hidden;
+  }
+
+  .badge-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle at top right, rgba(13,148,136,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.8rem;
+  }
+
+  .badge-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+  .badge-logo span { color: var(--accent); }
+
+  .verified-stamp {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 100px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .verified-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+  .badge-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, #e0f2f1 100%);
+    margin-bottom: 1.6rem;
+    opacity: 0.4;
+  }
+
+  .badge-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+    line-height: 1.1;
+  }
+
+  .badge-subtitle {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+  }
+
+  .badge-skill {
+    display: inline-block;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5rem 1.2rem;
+    border-radius: 100px;
+    margin-bottom: 1.6rem;
+  }
+
+  .badge-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+  }
+
+  .badge-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 1.2rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .badge-code {
+    font-size: 0.7rem;
+    color: #d1d5db;
+    letter-spacing: 0.1em;
+    font-family: monospace;
+  }
+  .badge-code span {
+    display: block;
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+  }
+
+  .badge-dates {
+    text-align: right;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .badge-dates strong {
+    display: block;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.78rem;
+  }
+
+  /* STATUS BANNER */
+  .status-active {
+    margin-top: 1rem;
+    padding: 0.75rem 1.2rem;
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .status-expired {
+    margin-top: 1rem;
+    padding: 0.75rem 1.2rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: #dc2626;
+    font-weight: 500;
+  }
+
+  /* WATERMARK */
+  .badge-watermark {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  @media (max-width: 480px) {
+    .input-row { flex-direction: column; }
+    .badge-stats { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">ProvAxi<span>a</span></a>
+  <a href="index.html" class="nav-back">← Πίσω στην αρχική</a>
+</nav>
+
+<main>
+
+  <!-- SEARCH -->
+  <div class="search-box">
+    <div class="search-icon">🔍</div>
+    <h1>Επαλήθευση Badge</h1>
+    <p>Βάλε το Badge ID για να επαληθεύσεις την αυθεντικότητα ενός ProvAxia certificate.<br><small style="color:#c4b5a0">Enter the Badge ID to verify a ProvAxia certificate.</small></p>
+    <div class="input-row">
+      <input type="text" id="badge-input" placeholder="π.χ. PA-2025-001" onkeypress="if(event.key==='Enter')verify()">
+      <button class="btn-verify" onclick="verify()">Επαλήθευσε</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="state-loading" class="state-msg">
+    <div class="icon">⏳</div>
+    <h2>Αναζήτηση...</h2>
+    <p>Ελέγχουμε τη βάση δεδομένων</p>
+  </div>
+
+  <!-- ERROR -->
+  <div id="state-error" class="state-msg">
+    <div class="icon">❌</div>
+    <h2 id="error-title">Badge δεν βρέθηκε</h2>
+    <p id="error-msg">Το Badge ID που έβαλες δεν υπάρχει στο σύστημά μας.</p>
+  </div>
+
+  <!-- RESULT -->
+  <div id="state-result">
+    <div class="badge-wrap">
+      <svg class="badge-watermark" width="180" height="200" viewBox="0 0 180 200">
+        <polygon points="20,40 90,0 160,40 160,120 90,200 20,120" fill="none" stroke="#0d9488" stroke-width="3"/>
+        <polygon points="50,40 130,40 160,80 90,200 20,80" fill="none" stroke="#0d9488" stroke-width="1.5"/>
+        <line x1="90" y1="0" x2="90" y2="200" stroke="#0d9488" stroke-width="1"/>
+        <line x1="20" y1="80" x2="160" y2="80" stroke="#0d9488" stroke-width="1"/>
+      </svg>
+
+      <div class="badge-top">
+        <div class="badge-logo">ProvAxi<span>a</span></div>
+        <div class="verified-stamp">
+          <div class="verified-dot"></div>
+          Verified
+        </div>
+      </div>
+
+      <div class="badge-divider"></div>
+
+      <div class="badge-name" id="r-name">—</div>
+      <div class="badge-subtitle">Certified Skill Professional</div>
+      <div class="badge-skill" id="r-skill">—</div>
+
+      <div class="badge-stats">
+        <div class="stat">
+          <div class="stat-val" id="r-score">—</div>
+          <div class="stat-label">Σκορ</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="r-rank">—</div>
+          <div class="stat-label">Κατάταξη</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">1 χρόνο</div>
+          <div class="stat-label">Ισχύς</div>
+        </div>
+      </div>
+
+      <div class="badge-bottom">
+        <div class="badge-code">
+          BADGE ID
+          <span id="r-code">—</span>
+        </div>
+        <div class="badge-dates">
+          <strong id="r-issued">—</strong>
+          <span id="r-expires">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="status-banner"></div>
+  </div>
+
+</main>
+
+<script>
+  const SUPABASE_URL = 'https://mjgjibwcfyhbyfqwpxoc.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qZ2ppYndjZnloYnlmcXdweG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NjAzODQsImV4cCI6MjA5NDIzNjM4NH0.12dXXcIYTrxa6mnY8lhmZ4WkfO5BOo4MoFzWnV5v1nU';
+
+  function show(id) {
+    ['state-loading','state-error','state-result'].forEach(s => {
+      document.getElementById(s).style.display = s === id ? 'block' : 'none';
+    });
+  }
+
+  async function verify() {
+    const id = document.getElementById('badge-input').value.trim().toUpperCase();
+    if (!id) return;
+
+    show('state-loading');
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/badges?badge_id=eq.${encodeURIComponent(id)}&select=*`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+
+      const data = await res.json();
+
+      if (!data || data.length === 0) {
+        document.getElementById('error-title').textContent = 'Badge δεν βρέθηκε';
+        document.getElementById('error-msg').textContent = 'Το Badge ID που έβαλες δεν υπάρχει στο σύστημά μας.';
+        show('state-error');
+        return;
+      }
+
+      const b = data[0];
+
+      document.getElementById('r-name').textContent = b.name;
+      document.getElementById('r-skill').textContent = b.skill;
+      document.getElementById('r-score').textContent = b.score + '/100';
+      document.getElementById('r-rank').textContent = b.rank;
+      document.getElementById('r-code').textContent = b.badge_id;
+      document.getElementById('r-issued').textContent = 'Εκδόθηκε: ' + formatDate(b.issued_date);
+      document.getElementById('r-expires').textContent = 'Λήγει: ' + formatDate(b.expiry_date);
+
+      // Check if expired
+      const expiry = new Date(b.expiry_date);
+      const today = new Date();
+      const banner = document.getElementById('status-banner');
+
+      if (b.status === 'active' && expiry > today) {
+        banner.innerHTML = `<div class="status-active">✅ Αυτό το badge είναι έγκυρο και αυθεντικό — This badge is valid and authentic</div>`;
+      } else {
+        banner.innerHTML = `<div class="status-expired">⚠️ Αυτό το badge έχει λήξει — This badge has expired</div>`;
+      }
+
+      show('state-result');
+
+    } catch (err) {
+      document.getElementById('error-title').textContent = 'Σφάλμα σύνδεσης';
+      document.getElementById('error-msg').textContent = 'Δοκίμασε ξανά σε λίγο.';
+      show('state-error');
+    }
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const months = ['Ιαν','Φεβ','Μαρ','Απρ','Μάι','Ιουν','Ιουλ','Αυγ','Σεπ','Οκτ','Νοε','Δεκ'];
+    const d = new Date(dateStr);
+    return months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  // Auto-check if badge ID in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlId = urlParams.get('id');
+  if (urlId) {
+    document.getElementById('badge-input').value = urlId;
+    verify();
+  }
+</script>
+
+</body>
+</html>

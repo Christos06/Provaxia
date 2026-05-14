@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProvAxia — Verified Badge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: #444;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── BADGE ── */
+  .badge-wrap {
+    position: relative;
+    width: 520px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 2.5rem 2.5rem 2rem;
+    box-shadow: 0 8px 40px rgba(13,148,136,0.13), 0 2px 8px rgba(0,0,0,0.07);
+    border: 1.5px solid #e0f2f1;
+    overflow: hidden;
+  }
+
+  /* decorative teal corner accent */
+  .badge-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle at top right, rgba(13,148,136,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* top row: logo + verified stamp */
+  .badge-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.8rem;
+  }
+
+  .badge-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0d0d0d;
+    letter-spacing: -0.02em;
+  }
+  .badge-logo span { color: #0d9488; }
+
+  .verified-stamp {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 100px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #0d9488;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .verified-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #0d9488;
+  }
+
+  /* divider */
+  .badge-divider {
+    height: 1px;
+    background: linear-gradient(90deg, #0d9488 0%, #e0f2f1 100%);
+    margin-bottom: 1.6rem;
+    opacity: 0.4;
+  }
+
+  /* name */
+  .badge-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    font-style: italic;
+    color: #0d0d0d;
+    margin-bottom: 0.3rem;
+    line-height: 1.1;
+  }
+
+  .badge-subtitle {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.6rem;
+  }
+
+  /* skill pill */
+  .badge-skill {
+    display: inline-block;
+    background: #0d0d0d;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5rem 1.2rem;
+    border-radius: 100px;
+    margin-bottom: 1.6rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* stats row */
+  .badge-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.8rem;
+  }
+  .stat { }
+  .stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0d9488;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+  }
+
+  /* bottom row: code + dates */
+  .badge-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 1.2rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .badge-code {
+    font-size: 0.7rem;
+    color: #d1d5db;
+    letter-spacing: 0.12em;
+    font-family: monospace;
+  }
+  .badge-code span {
+    display: block;
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 500;
+    font-family: monospace;
+    letter-spacing: 0.15em;
+  }
+
+  .badge-dates {
+    text-align: right;
+    font-size: 0.72rem;
+    color: #9ca3af;
+  }
+  .badge-dates strong {
+    display: block;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.78rem;
+  }
+
+  /* diamond watermark */
+  .badge-watermark {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    width: 520px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .controls h2 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  input, select {
+    padding: 0.55rem 0.8rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    color: #0d0d0d;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus { border-color: #0d9488; }
+
+  .btn-print {
+    width: 100%;
+    padding: 0.75rem;
+    background: #0d0d0d;
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    transition: background 0.2s;
+  }
+  .btn-print:hover { background: #0d9488; }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: white; padding: 0; justify-content: flex-start; }
+    .controls, h1 { display: none; }
+    .badge-wrap { box-shadow: none; border: 1.5px solid #e0f2f1; width: 100%; max-width: 520px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>ProvAxia — Badge Generator</h1>
+
+<!-- BADGE -->
+<div class="badge-wrap" id="badge">
+
+  <!-- Diamond watermark SVG -->
+  <svg class="badge-watermark" width="180" height="200" viewBox="0 0 180 200">
+    <polygon points="20,40 90,0 160,40 160,120 90,200 20,120" fill="none" stroke="#0d9488" stroke-width="3"/>
+    <polygon points="50,40 130,40 160,80 90,200 20,80" fill="none" stroke="#0d9488" stroke-width="1.5"/>
+    <line x1="90" y1="0" x2="90" y2="200" stroke="#0d9488" stroke-width="1"/>
+    <line x1="20" y1="80" x2="160" y2="80" stroke="#0d9488" stroke-width="1"/>
+  </svg>
+
+  <!-- Top -->
+  <div class="badge-top">
+    <div class="badge-logo">ProvAxi<span>a</span></div>
+    <div class="verified-stamp">
+      <div class="verified-dot"></div>
+      Verified
+    </div>
+  </div>
+
+  <div class="badge-divider"></div>
+
+  <!-- Name -->
+  <div class="badge-name" id="b-name">Γιώργος Παπαδόπουλος</div>
+  <div class="badge-subtitle">Certified Skill Professional</div>
+
+  <!-- Skill -->
+  <div class="badge-skill" id="b-skill">Sales & Customer Service</div>
+
+  <!-- Stats -->
+  <div class="badge-stats">
+    <div class="stat">
+      <div class="stat-val" id="b-score">84/100</div>
+      <div class="stat-label">Σκορ</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="b-rank">Top 15%</div>
+      <div class="stat-label">Κατάταξη</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="b-validity">1 χρόνο</div>
+      <div class="stat-label">Ισχύς</div>
+    </div>
+  </div>
+
+  <!-- Bottom -->
+  <div class="badge-bottom">
+    <div class="badge-code">
+      BADGE ID
+      <span id="b-code">PA-2025-001</span>
+    </div>
+    <div class="badge-dates">
+      <strong id="b-issued">Εκδόθηκε: Μάιος 2025</strong>
+      <span id="b-expires">Λήγει: Μάιος 2026</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <h2>Συμπλήρωσε τα στοιχεία</h2>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Όνομα</label>
+      <input type="text" id="i-name" value="Γιώργος Παπαδόπουλος" oninput="update()">
+    </div>
+    <div class="form-group">
+      <label>Skill</label>
+      <select id="i-skill" onchange="update()">
+        <option>Sales & Customer Service</option>
+        <option>Digital Marketing</option>
+        <option>Excel & Data Analysis</option>
+        <option>Coding</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Σκορ (/100)</label>
+      <input type="number" id="i-score" value="84" min="0" max="100" oninput="update()">
+    </div>
+    <div class="form-group">
+      <label>Κατάταξη</label>
+      <input type="text" id="i-rank" value="Top 15%" oninput="update()">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Badge ID</label>
+      <input type="text" id="i-code" value="PA-2025-001" oninput="update()">
+    </div>
+    <div class="form-group">
+      <label>Μήνας έκδοσης</label>
+      <input type="text" id="i-issued" value="Μάιος 2025" oninput="update()">
+    </div>
+  </div>
+
+  <div style="display:flex;gap:0.75rem;margin-top:0.75rem;">
+    <button class="btn-print" style="flex:1;margin-top:0;" onclick="saveBadge()">💾 Αποθήκευσε στο σύστημα</button>
+    <button class="btn-print" style="flex:1;margin-top:0;background:#f3f4f6;color:#374151;" onmouseover="this.style.background='#0d9488';this.style.color='#fff'" onmouseout="this.style.background='#f3f4f6';this.style.color='#374151'" onclick="window.print()">🖨️ PDF</button>
+  </div>
+  <div id="save-msg" style="display:none;margin-top:0.75rem;padding:0.75rem;border-radius:12px;font-size:0.85rem;text-align:center;"></div>
+  <div id="verify-link" style="display:none;margin-top:0.5rem;text-align:center;font-size:0.82rem;"></div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://mjgjibwcfyhbyfqwpxoc.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qZ2ppYndjZnloYnlmcXdweG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NjAzODQsImV4cCI6MjA5NDIzNjM4NH0.12dXXcIYTrxa6mnY8lhmZ4WkfO5BOo4MoFzWnV5v1nU';
+
+  async function saveBadge() {
+    const badge_id = document.getElementById('i-code').value.trim();
+    const name = document.getElementById('i-name').value.trim();
+    const skill = document.getElementById('i-skill').value;
+    const score = parseInt(document.getElementById('i-score').value);
+    const rank = document.getElementById('i-rank').value.trim();
+    const issuedRaw = document.getElementById('i-issued').value.trim();
+    const email = document.getElementById('i-email') ? document.getElementById('i-email').value.trim() : '';
+
+    if (!badge_id || !name || !skill) {
+      showMsg('⚠️ Συμπλήρωσε όλα τα πεδία', '#fef3c7', '#92400e');
+      return;
+    }
+
+    // Parse issued date
+    const months = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος',
+                    'Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+    const parts = issuedRaw.split(' ');
+    const mIdx = months.indexOf(parts[0]);
+    const yr = parseInt(parts[1]);
+    const issued_date = `${yr}-${String(mIdx+1).padStart(2,'0')}-01`;
+    const expiry_date = `${yr+1}-${String(mIdx+1).padStart(2,'0')}-01`;
+
+    showMsg('⏳ Αποθήκευση...', '#f0f9ff', '#0369a1');
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/badges`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ badge_id, name, skill, score, rank, issued_date, expiry_date, email, status: 'active' })
+      });
+
+      if (res.ok) {
+        showMsg('✅ Αποθηκεύτηκε επιτυχώς!', '#f0fdfa', '#065f46');
+        const link = `provaxia_verify.html?id=${badge_id}`;
+        document.getElementById('verify-link').style.display = 'block';
+        document.getElementById('verify-link').innerHTML = `🔗 Link επαλήθευσης: <a href="${link}" target="_blank" style="color:#0d9488;">${link}</a>`;
+      } else {
+        const err = await res.json();
+        if (err.code === '23505') {
+          showMsg('⚠️ Αυτό το Badge ID υπάρχει ήδη', '#fef3c7', '#92400e');
+        } else {
+          showMsg('❌ Σφάλμα: ' + (err.message || 'Άγνωστο σφάλμα'), '#fef2f2', '#991b1b');
+        }
+      }
+    } catch(e) {
+      showMsg('❌ Σφάλμα σύνδεσης', '#fef2f2', '#991b1b');
+    }
+  }
+
+  function showMsg(text, bg, color) {
+    const el = document.getElementById('save-msg');
+    el.style.display = 'block';
+    el.style.background = bg;
+    el.style.color = color;
+    el.textContent = text;
+  }
+
+  function update() {
+    document.getElementById('b-name').textContent = document.getElementById('i-name').value;
+    document.getElementById('b-skill').textContent = document.getElementById('i-skill').value;
+    document.getElementById('b-score').textContent = document.getElementById('i-score').value + '/100';
+    document.getElementById('b-rank').textContent = document.getElementById('i-rank').value;
+    document.getElementById('b-code').textContent = document.getElementById('i-code').value;
+
+    const issued = document.getElementById('i-issued').value;
+    document.getElementById('b-issued').textContent = 'Εκδόθηκε: ' + issued;
+
+    // Auto-calculate expiry (1 year)
+    const parts = issued.split(' ');
+    const months = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος',
+                    'Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+    if (parts.length === 2) {
+      const mIdx = months.indexOf(parts[0]);
+      const yr = parseInt(parts[1]);
+      if (mIdx >= 0 && !isNaN(yr)) {
+        document.getElementById('b-expires').textContent = 'Λήγει: ' + months[mIdx] + ' ' + (yr + 1);
+      }
+    }
+
+    // Auto badge ID increment hint
+    const score = parseInt(document.getElementById('i-score').value);
+    if (score >= 70) {
+      document.getElementById('b-rank').style.color = '#0d9488';
+    } else {
+      document.getElementById('b-rank').style.color = '#ef4444';
+    }
+  }
+</script>
+
+</body>
+</html>
