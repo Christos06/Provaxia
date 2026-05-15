@@ -344,7 +344,7 @@
 
 <section id="pricing">
   <p class="section-label reveal" data-el="Τιμές" data-en="Pricing">Τιμές</p>
-  <h2 class="section-title reveal" data-el="Ξεκινά δωρεάν.<br>Πληρώνεις όταν αξίζει." data-en="Starts free.<br>Pay when it's worth it.">Ξεκινά δωρεάν.<br>Πληρώνεις όταν αξίζει.</h2>
+  <h2 class="section-title reveal" id="pricing-title" data-el="Ξεκινά δωρεάν.<br>Πληρώνεις όταν αξίζει." data-el-company="Βρες τον κατάλληλο άνθρωπο.<br>Πριν τον βρει κάποιος άλλος." data-en="Starts free.<br>Pay when it's worth it." data-en-company="Find the right person.<br>Before someone else does.">Ξεκινά δωρεάν.<br>Πληρώνεις όταν αξίζει.</h2>
   <div class="pricing-grid reveal">
     <div class="price-card">
       <span class="price-tag" data-el="Δωρεάν" data-en="Free">Δωρεάν</span>
@@ -699,6 +699,9 @@
     if (!profileStr) return;
     const profile = JSON.parse(profileStr);
     const pricingCards = document.querySelectorAll('.price-card');
+    const pricingTitle = document.getElementById('pricing-title');
+    const lang = document.querySelector('.lang-btn.active')?.textContent?.trim() === 'EN' ? 'en' : 'el';
+
     if (profile.type === 'candidate') {
       // Κρύψε το πλάνο εταιρειών
       pricingCards.forEach(card => {
@@ -715,6 +718,11 @@
           card.style.display = 'none';
         }
       });
+      // Άλλαξε τον τίτλο για εταιρείες
+      if (pricingTitle) {
+        const attr = lang === 'en' ? 'data-en-company' : 'data-el-company';
+        pricingTitle.innerHTML = pricingTitle.getAttribute(attr) || pricingTitle.innerHTML;
+      }
     }
   })();
 
