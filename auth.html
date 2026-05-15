@@ -101,14 +101,16 @@
 <div class="page-wrap">
   <div class="auth-card">
 
-    <!-- USER TYPE TOGGLE -->
-    <div class="type-toggle">
-      <button class="type-btn active" id="type-candidate" onclick="setType('candidate')">
-        👤 <span data-el="Υποψήφιος" data-en="Candidate">Υποψήφιος</span>
-      </button>
-      <button class="type-btn" id="type-company" onclick="setType('company')">
-        🏢 <span data-el="Εταιρεία" data-en="Company">Εταιρεία</span>
-      </button>
+    <!-- USER TYPE TOGGLE — εμφανίζεται μόνο στην εγγραφή -->
+    <div id="type-toggle-wrap" style="display:none;">
+      <div class="type-toggle">
+        <button class="type-btn active" id="type-candidate" onclick="setType('candidate')">
+          👤 <span data-el="Υποψήφιος" data-en="Candidate">Υποψήφιος</span>
+        </button>
+        <button class="type-btn" id="type-company" onclick="setType('company')">
+          🏢 <span data-el="Εταιρεία" data-en="Company">Εταιρεία</span>
+        </button>
+      </div>
     </div>
 
     <!-- AUTH TABS -->
@@ -220,6 +222,8 @@
     document.getElementById('tab-register').classList.toggle('active', tab === 'register');
     document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+    // Εμφάνισε το toggle μόνο στην εγγραφή
+    document.getElementById('type-toggle-wrap').style.display = tab === 'register' ? 'block' : 'none';
     clearMsg();
   }
 
