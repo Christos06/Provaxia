@@ -43,6 +43,8 @@
   .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; white-space: nowrap; }
   .marquee-item { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--paper); letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; }
   .marquee-dot { color: var(--accent); margin: 0 0.5rem; }
+  @media(max-width:768px){.about-grid{grid-template-columns:1fr!important;gap:2rem!important;}}
+  @media(max-width:600px){footer{flex-direction:column;align-items:center;text-align:center;}}
   @keyframes marquee { from{transform:translateX(0);}to{transform:translateX(-50%);} }
   section { padding: 6rem 4rem; }
   .section-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
@@ -486,7 +488,7 @@
   </div>
 </section>
 
-<section id="contact" style="background:var(--ink);color:var(--paper);">
+<section id="contact" style="background:var(--ink);color:var(--paper);padding-bottom:4rem;">
   <p class="section-label reveal" style="color:var(--accent);" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</p>
   <h2 class="section-title reveal" style="color:var(--paper);" data-el="Μιλήστε μαζί μας.<br>Απαντάμε σύντομα." data-en="Talk to us.<br>We reply quickly.">Μιλήστε μαζί μας.<br>Απαντάμε σύντομα.</h2>
   <div class="contact-grid reveal">
@@ -507,6 +509,35 @@
         <div class="contact-icon">🏢</div>
         <div><div class="contact-label" data-el="Για επιχειρήσεις" data-en="For businesses">Για επιχειρήσεις</div><div class="contact-value" style="color:var(--paper);">provaxia.app@hotmail.com</div></div>
       </div>
+
+      <!-- ── FOLLOW US + ABOUT ── -->
+      <div style="margin-top:1rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;gap:1rem;">
+
+        <!-- Follow us -->
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="font-size:0.75rem;color:rgba(255,255,255,0.45);letter-spacing:0.12em;text-transform:uppercase;" data-el="Ακολουθήστε μας" data-en="Follow us">Ακολουθήστε μας</span>
+          <a href="https://www.instagram.com/provaxia" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+             style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65);transition:all 0.25s;text-decoration:none;"
+             onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='rgba(13,148,136,0.1)'"
+             onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.65)';this.style.background='transparent'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- About us button -->
+        <button onclick="document.getElementById('about-modal').classList.add('open')"
+          style="display:inline-flex;align-items:center;gap:0.5rem;width:fit-content;padding:0.55rem 1.2rem;background:transparent;border:1.5px solid rgba(255,255,255,0.2);border-radius:100px;color:rgba(255,255,255,0.65);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.25s;"
+          onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+          onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.65)'">
+          <span data-el="Σχετικά με εμάς" data-en="About us">Σχετικά με εμάς</span>
+          <span style="font-size:0.75rem;opacity:0.6;">↗</span>
+        </button>
+
+      </div>
     </div>
     <form class="contact-form" action="https://formspree.io/f/xdabjndb" method="POST" onsubmit="handleContact(event)">
       <input type="text" name="name" class="form-input" placeholder="Το όνομά σου / Your name" required style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.15);color:var(--paper);">
@@ -517,7 +548,47 @@
       <p id="contact-success" style="display:none;color:#5eead4;font-size:0.9rem;" data-el="✓ Το μήνυμά σου στάλθηκε! Σύντομα μαζί σου." data-en="✓ Message sent! Talk soon.">✓ Το μήνυμά σου στάλθηκε! Σύντομα μαζί σου.</p>
     </form>
   </div>
+
+  <!-- copyright strip -->
+  <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.3);" data-el="© 2025 ProvAxia. Όλα τα δικαιώματα διατηρούνται." data-en="© 2025 ProvAxia. All rights reserved.">© 2025 ProvAxia. Όλα τα δικαιώματα διατηρούνται.</div>
 </section>
+
+<!-- ── ABOUT MODAL ── -->
+<div class="modal-overlay" id="about-modal" onclick="if(event.target===this)this.classList.remove('open')" style="z-index:300;">
+  <div class="modal-box" style="max-width:660px;">
+    <button class="modal-close" onclick="document.getElementById('about-modal').classList.remove('open')">×</button>
+    <div class="modal-title" data-el="Σχετικά με εμάς" data-en="About us">Σχετικά με εμάς</div>
+    <div class="modal-body">
+
+      <p style="font-size:1rem;line-height:1.8;margin-bottom:1.2rem;" data-el="Το ProvAxia γεννήθηκε από μια απλή παρατήρηση: το βιογραφικό δεν αποδεικνύει τίποτα. Τίτλοι σπουδών, χρόνια εμπειρίας, λίστες δεξιοτήτων — κανένα από αυτά δεν απαντά στην ουσιαστική ερώτηση που έχει κάθε εργοδότης." data-en="ProvAxia was born from a simple observation: a CV proves nothing. Degrees, years of experience, skill lists — none of these answer the fundamental question every employer has.">Το ProvAxia γεννήθηκε από μια απλή παρατήρηση: το βιογραφικό δεν αποδεικνύει τίποτα. Τίτλοι σπουδών, χρόνια εμπειρίας, λίστες δεξιοτήτων — κανένα από αυτά δεν απαντά στην ουσιαστική ερώτηση που έχει κάθε εργοδότης.</p>
+
+      <blockquote style="border-left:3px solid var(--accent);padding:0.8rem 1.2rem;margin-bottom:1.2rem;background:rgba(13,148,136,0.05);border-radius:0 8px 8px 0;">
+        <p style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);font-style:italic;" data-el="«Μπορεί αυτός ο άνθρωπος να κάνει πραγματικά τη δουλειά;»" data-en="«Can this person actually do the job?»">«Μπορεί αυτός ο άνθρωπος να κάνει πραγματικά τη δουλειά;»</p>
+      </blockquote>
+
+      <p style="font-size:1rem;line-height:1.8;margin-bottom:1.5rem;" data-el="Φτιάξαμε μια πλατφόρμα που απαντά ακριβώς σε αυτό. Αξιολογούμε πραγματικές δεξιότητες μέσα από σενάρια αληθινής δουλειάς — και εκδίδουμε ένα verified badge που δεν μπορεί να αγοραστεί, μόνο να κερδηθεί." data-en="We built a platform that answers exactly that. We assess real skills through real work scenarios — and issue a verified badge that can't be bought, only earned.">Φτιάξαμε μια πλατφόρμα που απαντά ακριβώς σε αυτό. Αξιολογούμε πραγματικές δεξιότητες μέσα από σενάρια αληθινής δουλειάς — και εκδίδουμε ένα verified badge που δεν μπορεί να αγοραστεί, μόνο να κερδηθεί.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
+        <div style="padding:1rem;background:var(--paper);border-radius:10px;border:1px solid var(--border);">
+          <div style="font-size:1.2rem;margin-bottom:0.4rem;">🎯</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--ink);margin-bottom:0.3rem;" data-el="Αποστολή" data-en="Mission">Αποστολή</div>
+          <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;" data-el="Να ανταμειφθεί η πραγματική αξία, όχι το χαρτί." data-en="To reward real merit, not paper.">Να ανταμειφθεί η πραγματική αξία, όχι το χαρτί.</div>
+        </div>
+        <div style="padding:1rem;background:var(--paper);border-radius:10px;border:1px solid var(--border);">
+          <div style="font-size:1.2rem;margin-bottom:0.4rem;">🔍</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--ink);margin-bottom:0.3rem;" data-el="Διαφορά" data-en="Difference">Διαφορά</div>
+          <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;" data-el="Δεν κάνουμε quiz. Κάθε badge κερδίζεται εμπράκτως." data-en="No quizzes. Every badge is earned through action.">Δεν κάνουμε quiz. Κάθε badge κερδίζεται εμπράκτως.</div>
+        </div>
+        <div style="padding:1rem;background:var(--paper);border-radius:10px;border:1px solid var(--border);">
+          <div style="font-size:1.2rem;margin-bottom:0.4rem;">🇬🇷</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--ink);margin-bottom:0.3rem;" data-el="Έδρα" data-en="Base">Έδρα</div>
+          <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;" data-el="Από την Ελλάδα, για όλους." data-en="From Greece, for everyone.">Από την Ελλάδα, για όλους.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="privacy-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal-box">
