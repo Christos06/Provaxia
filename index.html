@@ -163,7 +163,6 @@
       <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
     <a href="#" onclick="openCompany();return false;" style="font-size:0.85rem;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" data-el="Για Εταιρείες" data-en="For Companies">Για Εταιρείες</a>
-    <a href="redeem.html" style="font-size:0.85rem;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" data-el="Επαλήθευση Υποψηφίου" data-en="Candidate Verification">Επαλήθευση Υποψηφίου</a>
     <div id="nav-auth-area"></div>
   </div>
 </nav>
@@ -352,9 +351,10 @@
       <div class="price-amount">€0</div>
       <div class="price-period" data-el="για πάντα" data-en="forever">για πάντα</div>
       <ul class="price-features">
-        <li data-el="5 βασικά assessments" data-en="5 basic assessments">5 βασικά assessments</li>
-        <li data-el="Αποτέλεσμα & σύγκριση" data-en="Result & comparison">Αποτέλεσμα & σύγκριση</li>
-        <li data-el="Βασικό badge" data-en="Basic badge">Βασικό badge</li>
+        <li data-el="1 assessment" data-en="1 assessment">1 assessment</li>
+        <li data-el="Αποτέλεσμα & βαθμολογία" data-en="Result & score">Αποτέλεσμα & βαθμολογία</li>
+        <li data-el="Βασικό badge (αν περάσεις)" data-en="Basic badge (if you pass)">Βασικό badge (αν περάσεις)</li>
+        <li data-el="AI Roadmap βελτίωσης (αν αποτύχεις)" data-en="AI Improvement Roadmap (if you fail)">AI Roadmap βελτίωσης (αν αποτύχεις)</li>
       </ul>
       <button class="price-btn" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})" data-el="Ξεκίνα δωρεάν" data-en="Start free">Ξεκίνα δωρεάν</button>
     </div>
@@ -363,11 +363,12 @@
       <div class="price-amount">€19</div>
       <div class="price-period" data-el="ανά badge · ισχύς 1 χρόνο" data-en="per badge · valid 1 year">ανά badge · ισχύς 1 χρόνο</div>
       <ul class="price-features">
-        <li data-el="Πλήρης αξιολόγηση" data-en="Full evaluation">Πλήρης αξιολόγηση</li>
+        <li data-el="Όλα τα assessments" data-en="All assessments">Όλα τα assessments</li>
+        <li data-el="Πλήρης αξιολόγηση & σύγκριση" data-en="Full evaluation & comparison">Πλήρης αξιολόγηση & σύγκριση</li>
         <li data-el="Top % κατάταξη" data-en="Top % ranking">Top % κατάταξη</li>
-        <li data-el="Verified badge" data-en="Verified badge">Verified badge</li>
-        <li data-el="AI roadmap βελτίωσης" data-en="AI improvement roadmap">AI roadmap βελτίωσης</li>
-        <li data-el="Ισχύς 1 χρόνο — μετά ανανέωση" data-en="Valid 1 year — then renew">Ισχύς 1 χρόνο — μετά ανανέωση</li>
+        <li data-el="Verified badge (ισχύς 1 χρόνο)" data-en="Verified badge (valid 1 year)">Verified badge (ισχύς 1 χρόνο)</li>
+        <li data-el="AI Roadmap βελτίωσης" data-en="AI Improvement Roadmap">AI Roadmap βελτίωσης</li>
+        <li data-el="Εμφάνιση στη λίστα εταιρειών" data-en="Listed for companies">Εμφάνιση στη λίστα εταιρειών</li>
       </ul>
       <button class="price-btn" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})" data-el="Αποκτήστε Verified badge" data-en="Get Verified badge">Αποκτήστε Verified badge</button>
     </div>
@@ -691,6 +692,31 @@
   }
 
   updateNavAuth();
+
+  // Εμφάνιση πλάνων ανά τύπο χρήστη
+  (function() {
+    const profileStr = localStorage.getItem('provaxia_profile');
+    if (!profileStr) return;
+    const profile = JSON.parse(profileStr);
+    const pricingCards = document.querySelectorAll('.price-card');
+    if (profile.type === 'candidate') {
+      // Κρύψε το πλάνο εταιρειών
+      pricingCards.forEach(card => {
+        const tag = card.querySelector('.price-tag');
+        if (tag && (tag.textContent === 'Εταιρείες' || tag.textContent === 'Companies')) {
+          card.style.display = 'none';
+        }
+      });
+    } else if (profile.type === 'company') {
+      // Κρύψε τα πλάνα υποψηφίων
+      pricingCards.forEach(card => {
+        const tag = card.querySelector('.price-tag');
+        if (tag && (tag.textContent === 'Δωρεάν' || tag.textContent === 'Free' || tag.textContent === 'Verified')) {
+          card.style.display = 'none';
+        }
+      });
+    }
+  })();
 
   function openCompany() {
     const token = localStorage.getItem('provaxia_token');
