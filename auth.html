@@ -180,6 +180,16 @@
   const SUPABASE_URL = 'https://mjgjibwcfyhbyfqwpxoc.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qZ2ppYndjZnloYnlmcXdweG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NjAzODQsImV4cCI6MjA5NDIzNjM4NH0.12dXXcIYTrxa6mnY8lhmZ4WkfO5BOo4MoFzWnV5v1nU';
 
+  // Αν είσαι ήδη συνδεδεμένος → redirect
+  (function() {
+    const token = localStorage.getItem('provaxia_token');
+    const profileStr = localStorage.getItem('provaxia_profile');
+    if (token && profileStr) {
+      const profile = JSON.parse(profileStr);
+      window.location.href = profile.type === 'company' ? 'company.html' : 'profile.html';
+    }
+  })();
+
   let currentType = 'candidate'; // 'candidate' or 'company'
   let currentTab = 'login';
 
